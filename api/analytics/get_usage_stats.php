@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'database.php';
+require '../config/database.php'; // Update path sesuai lokasi database.php
 
 $sql = "SELECT COUNT(*) AS total_users, COUNT(DISTINCT user_id) AS active_users FROM user_activity";
 $result = $conn->query($sql);

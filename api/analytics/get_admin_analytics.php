@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'database.php';
+require '../config/database.php'; // Update path sesuai lokasi database.php
 
 $sql = "SELECT user_id, COUNT(*) AS logins FROM user_activity GROUP BY user_id ORDER BY logins DESC";
 $result = $conn->query($sql);

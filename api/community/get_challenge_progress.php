@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'database.php';
+require '../config/database.php'; // Update path sesuai lokasi database.php
 
 $challenge_id = $_GET['challenge_id'] ?? null;
 $user_id = $_GET['user_id'] ?? null;

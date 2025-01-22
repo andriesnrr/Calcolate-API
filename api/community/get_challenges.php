@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'database.php';
+require '../config/database.php'; // Update path sesuai lokasi database.php
+
 
 $sql = "SELECT id, challenge_name, description, goal, created_by FROM challenges";
 $result = $conn->query($sql);
