@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "ade";
+$password = "";
 $dbname = "calcolatedb";
 
 // Buat koneksi
