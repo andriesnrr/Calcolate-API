@@ -15,23 +15,10 @@ require 'database.php'; // Include the database connection
 // Get JSON data sent by Flutter
 $data = json_decode(file_get_contents("php://input"));
 
-// Create an array to track missing fields
-$missingFields = [];
-
-// Check each field and add to the missingFields array if not set
-if (!isset($data->email)) {
-    $missingFields[] = 'email';
-}
-if (!isset($data->password)) {
-    $missingFields[] = 'password';
-}
-
-// If there are missing fields, return them in the response
-if (!empty($missingFields)) {
-    echo json_encode([
-        "message" => "Missing required fields",
-        "missing_fields" => $missingFields
-    ]);
+// Validate required fields
+if (!isset($data->email) || !isset($data->password)) {
+    http_response_code(400); // Bad Request
+    echo json_encode(["error" => "Email dan password diperlukan"]);
     exit();
 }
 
@@ -40,36 +27,44 @@ $password = $data->password;
 
 // Validate email format
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(["message" => "Invalid email format"]);
+    http_response_code(400); // Bad Request
+    echo json_encode(["error" => "Format email tidak valid"]);
     exit();
 }
 
-// Check if email already exists
-$checkEmailStmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-$checkEmailStmt->bind_param("s", $email);
-$checkEmailStmt->execute();
-$checkEmailResult = $checkEmailStmt->get_result();
+// Periksa apakah email sudah terdaftar
+$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if ($checkEmailResult->num_rows > 0) {
-    echo json_encode(["message" => "Email already exists"]);
+if ($result->num_rows > 0) {
+    http_response_code(409); // Conflict
+    echo json_encode(["error" => "Email sudah terdaftar"]);
+    $stmt->close();
+    $conn->close();
     exit();
 }
 
 // Hash the password
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Insert user data into the database
+// Masukkan pengguna baru ke dalam database
 $stmt = $conn->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
 $stmt->bind_param("ss", $email, $hashed_password);
 
 if ($stmt->execute()) {
-    echo json_encode(["message" => "Registration successful"]);
+    http_response_code(201); // Created
+    echo json_encode([
+        "message" => "Pendaftaran berhasil",
+        "user_id" => $stmt->insert_id
+    ]);
 } else {
-    echo json_encode(["message" => "Error during registration"]);
+    http_response_code(500); // Internal Server Error
+    echo json_encode(["error" => "Terjadi kesalahan saat mendaftar"]);
 }
 
-// Close statements and connection
+// Close statement and connection
 $stmt->close();
-$checkEmailStmt->close();
 $conn->close();
 ?>
