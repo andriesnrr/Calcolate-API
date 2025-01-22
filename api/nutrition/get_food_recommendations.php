@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'database.php';
+require '../config/database.php'; // Update path sesuai lokasi database.php
 
 // Contoh: Preferensi pengguna berdasarkan kebutuhan kalori
 $user_id = $_GET['user_id'] ?? null;

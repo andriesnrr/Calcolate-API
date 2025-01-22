@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'database.php';
+require '../config/database.php'; // Update path sesuai lokasi database.php
+
 
 $language = $_GET['language'] ?? 'en';
 

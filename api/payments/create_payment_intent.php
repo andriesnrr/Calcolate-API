@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'constants.php';
+require '../config/constants.php';
+
 
 $data = json_decode(file_get_contents("php://input"), true);
 

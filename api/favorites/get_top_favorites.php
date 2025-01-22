@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-require 'database.php';
+require '../config/database.php'; // Update path sesuai lokasi database.php
 
 $sql = "SELECT item_id, item_type, COUNT(*) AS favorite_count FROM favorites GROUP BY item_id, item_type ORDER BY favorite_count DESC LIMIT 10";
 $result = $conn->query($sql);
